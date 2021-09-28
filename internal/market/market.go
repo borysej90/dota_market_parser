@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"net/http"
+	"strings"
 	"time"
 
 	dmn "dota_market_notifier"
@@ -49,7 +50,7 @@ func (p *Parser) getItemPrice(_ context.Context, name string) (*dmn.TradeLot, er
 	client := http.Client{Timeout: 30 * time.Second}
 	resp, err := client.Get(fmt.Sprintf(
 		"%s/search-item-by-hash-name?key=%s&hash_name=%s",
-		Url, p.apiKey, name,
+		Url, p.apiKey, strings.ReplaceAll(name, " ", "%20"),
 	))
 	if err != nil {
 		return nil, err
