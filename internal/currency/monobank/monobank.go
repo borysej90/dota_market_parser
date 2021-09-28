@@ -24,6 +24,10 @@ type MonoParser struct {
 	validTil time.Time
 }
 
+func New() *MonoParser {
+	return &MonoParser{rates: make(map[int]float32)}
+}
+
 func (m *MonoParser) GetCurrencyRate(currencyName string) (float32, error) {
 	if m.rates == nil || m.validTil.Before(time.Now()) {
 		if err := m.fetchAPI(); err != nil {
