@@ -34,7 +34,7 @@ func NewRepo(db *sqlx.DB) *Repo {
 	return &Repo{db: db}
 }
 
-func (r *Repo) GetAllItems(ctx context.Context) ([]string, error) {
+func (r *Repo) GetAllItemsNames(ctx context.Context) ([]string, error) {
 	stmt := fmt.Sprintf("SELECT name FROM %s", ItemsTableName)
 	records := make([]*ItemRecord, 0)
 	if err := r.db.SelectContext(ctx, &records, stmt); err != nil {

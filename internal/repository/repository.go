@@ -3,5 +3,5 @@ package repository
 import "context"
 
 type Repo interface {
-	GetAllItems(ctx context.Context) ([]string, error)
+	GetAllItemsNames(ctx context.Context) ([]string, error)
 }
