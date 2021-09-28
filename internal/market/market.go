@@ -54,6 +54,9 @@ func (p *Parser) getItemPrice(_ context.Context, name string) (*dmn.TradeLot, er
 	if err != nil {
 		return nil, err
 	}
+	if resp.StatusCode != 200 {
+		return nil, errors.Errorf("failed to get info about '%s': %s", name, resp.Status)
+	}
 	var res response
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return nil, err
