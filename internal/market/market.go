@@ -2,14 +2,15 @@ package market
 
 import (
 	"context"
-	dmn "dota_market_notifier"
-	"dota_market_notifier/internal/currency"
-	"dota_market_notifier/internal/repository"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
 	"net/http"
 	"time"
+
+	dmn "dota_market_notifier"
+	"dota_market_notifier/internal/currency"
+	"dota_market_notifier/internal/repository"
 )
 
 const Url = "https://market.dota2.net/api/v2"

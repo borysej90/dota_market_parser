@@ -3,10 +3,11 @@ package db
 
 import (
 	"context"
-	"dota_market_notifier/internal/repository"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"time"
+
+	"dota_market_notifier/internal/repository"
 )
 
 var _ repository.Repo = &Repo{}
@@ -21,7 +22,7 @@ type ItemRecord struct {
 
 func NewDB(host string, port int, user, password, dbName string) *sqlx.DB {
 	return sqlx.MustConnect("postgres", fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s",
+		"postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		user, password, host, port, dbName,
 	))
 }

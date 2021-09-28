@@ -1,11 +1,12 @@
 package monobank
 
 import (
-	"dota_market_notifier/internal/currency"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"net/http"
 	"time"
+
+	"dota_market_notifier/internal/currency"
 )
 
 var _ currency.Parser = &MonoParser{}
