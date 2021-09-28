@@ -1,13 +1,28 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
+
+	"dota_market_notifier/internal/currency/monobank"
+	"dota_market_notifier/internal/market"
+	"dota_market_notifier/internal/repository/db"
 )
 
 func main() {
-
+	apiKey := mustGetEnvVar("API_KEY")
+	repo := db.NewRepo(db.NewDB(getDBCredentials()))
+	currency := monobank.New()
+	marketParser := market.New(repo, currency, apiKey)
+	tradeLots, err := marketParser.GetLastPrices(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	for _, tradeLot := range tradeLots {
+		fmt.Println(tradeLot)
+	}
 }
 
 func getDBCredentials() (host string, port int, username, password, dbName string) {
