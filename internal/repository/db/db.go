@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"time"
 
 	"dota_market_notifier/internal/repository"
