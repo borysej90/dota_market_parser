@@ -3,22 +3,32 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"time"
 
+	dmn "dota_market_notifier"
 	"dota_market_notifier/internal/repository"
 )
 
 var _ repository.Repo = &Repo{}
 
-const ItemsTableName = "items"
+const (
+	ItemsTableName   = "items"
+	HistoryTableName = "history"
+)
 
 type ItemRecord struct {
 	ID        int       `db:"id"`
 	Name      string    `db:"name"`
 	CreatedAt time.Time `db:"created_at"`
+
+	// history related fields
+	Price     float32   `db:"price"`
+	Quantity  int       `db:"quantity"`
+	Timestamp time.Time `db:"timestamp"`
 }
 
 func NewDB(host string, port int, user, password, dbName string) *sqlx.DB {
@@ -46,4 +56,44 @@ func (r *Repo) GetAllItemsNames(ctx context.Context) ([]string, error) {
 		return item.Name
 	}, records)
 	return names, nil
+}
+
+func (r *Repo) UpdateItemsHistory(ctx context.Context, lots []*dmn.TradeLot) error {
+	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	records := deriveFmapTradeLotToRecord(func(lot *dmn.TradeLot) *ItemRecord {
+		return &ItemRecord{
+			Name:      lot.Name,
+			Price:     lot.Price,
+			Quantity:  lot.Quantity,
+			Timestamp: time.Now(),
+		}
+	}, lots)
+	stmt := fmt.Sprintf(`
+INSERT INTO %s
+(
+    item_id,
+    price,
+    quantity,
+    timestamp
+) VALUES (
+    (SELECT id FROM %s WHERE name = :name),
+    :price,
+    :quantity,
+    :timestamp
+)`, HistoryTableName, ItemsTableName)
+	prepared, err := tx.PrepareNamedContext(ctx, stmt)
+	if err != nil {
+		return err
+	}
+	prepared = tx.NamedStmtContext(ctx, prepared)
+	for _, record := range records {
+		if _, err := prepared.ExecContext(ctx, record); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
 }
