@@ -86,6 +86,10 @@ func (p *Parser) getItemPrice(_ context.Context, name string) (*dmn.TradeLot, er
 	}, nil
 }
 
+func (p *Parser) UpdateHistory(ctx context.Context, lots []*dmn.TradeLot) error {
+	return p.repo.UpdateItemsHistory(ctx, lots)
+}
+
 func calculateQuantityByPrice(items []itemData, price int) (quantity int) {
 	for _, item := range items {
 		if item.Price == price {

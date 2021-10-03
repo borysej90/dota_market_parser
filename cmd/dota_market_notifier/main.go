@@ -23,6 +23,9 @@ func main() {
 	for _, tradeLot := range tradeLots {
 		fmt.Println(tradeLot)
 	}
+	if err := marketParser.UpdateHistory(context.Background(), tradeLots); err != nil {
+		panic(err)
+	}
 }
 
 func getDBCredentials() (host string, port int, username, password, dbName string) {
