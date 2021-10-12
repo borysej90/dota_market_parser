@@ -21,14 +21,13 @@ const (
 )
 
 type ItemRecord struct {
-	ID        int       `db:"id"`
-	Name      string    `db:"name"`
-	CreatedAt time.Time `db:"created_at"`
+	ID   int    `db:"id"`
+	Name string `db:"name"`
 
 	// history related fields
 	Price     float32   `db:"price"`
 	Quantity  int       `db:"quantity"`
-	Timestamp time.Time `db:"timestamp"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func NewDB(host string, port int, user, password, dbName string) *sqlx.DB {
@@ -69,7 +68,7 @@ func (r *Repo) UpdateItemsHistory(ctx context.Context, lots []*dmn.TradeLot) err
 			Name:      lot.Name,
 			Price:     lot.Price,
 			Quantity:  lot.Quantity,
-			Timestamp: time.Now(),
+			CreatedAt: time.Now(),
 		}
 	}, lots)
 	stmt := fmt.Sprintf(`
@@ -78,12 +77,12 @@ INSERT INTO %s
     item_id,
     price,
     quantity,
-    timestamp
+    created_at
 ) VALUES (
     (SELECT id FROM %s WHERE name = :name),
     :price,
     :quantity,
-    :timestamp
+    :created_at
 )`, HistoryTableName, ItemsTableName)
 	prepared, err := tx.PrepareNamedContext(ctx, stmt)
 	if err != nil {
