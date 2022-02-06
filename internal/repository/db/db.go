@@ -74,12 +74,10 @@ INSERT INTO %s
 (
     item_id,
     price,
-    quantity,
     created_at
 ) VALUES (
     (SELECT id FROM %s WHERE name = :name),
     :price,
-    :quantity,
     :created_at
 )`, HistoryTableName, ItemsTableName)
 	prepared, err := tx.PrepareNamedContext(ctx, stmt)
