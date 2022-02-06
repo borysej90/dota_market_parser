@@ -1,0 +1,1 @@
+ALTER TABLE history ADD COLUMN quantity INT DEFAULT 1;

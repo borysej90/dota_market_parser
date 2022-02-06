@@ -26,7 +26,6 @@ type ItemRecord struct {
 
 	// history related fields
 	Price     float32   `db:"price"`
-	Quantity  int       `db:"quantity"`
 	CreatedAt time.Time `db:"created_at"`
 }
 
@@ -67,7 +66,6 @@ func (r *Repo) UpdateItemsHistory(ctx context.Context, lots []*dmn.TradeLot) err
 		return &ItemRecord{
 			Name:      lot.Name,
 			Price:     lot.Price,
-			Quantity:  lot.Quantity,
 			CreatedAt: time.Now(),
 		}
 	}, lots)

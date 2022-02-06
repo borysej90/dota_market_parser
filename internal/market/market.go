@@ -66,7 +66,6 @@ func (p *Parser) getItemPrice(_ context.Context, name string) (*dmn.TradeLot, er
 		return nil, errors.Errorf("unsuccessful request: %s", res.Error)
 	}
 	cheapestItem := res.Data[0]
-	quantity := calculateQuantityByPrice(res.Data, cheapestItem.Price)
 	var price float32
 	price, err = p.currency.GetCurrencyRate(res.Currency)
 	if err != nil {
@@ -80,23 +79,13 @@ func (p *Parser) getItemPrice(_ context.Context, name string) (*dmn.TradeLot, er
 		price *= float32(cheapestItem.Price) / 1000
 	}
 	return &dmn.TradeLot{
-		Name:     name,
-		Price:    price,
-		Quantity: quantity,
+		Name:  name,
+		Price: price,
 	}, nil
 }
 
 func (p *Parser) UpdateHistory(ctx context.Context, lots []*dmn.TradeLot) error {
 	return p.repo.UpdateItemsHistory(ctx, lots)
-}
-
-func calculateQuantityByPrice(items []itemData, price int) (quantity int) {
-	for _, item := range items {
-		if item.Price == price {
-			quantity += item.Count
-		}
-	}
-	return
 }
 
 // response represents returned data from Dota 2 Market API endpoint.
