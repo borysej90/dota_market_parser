@@ -56,13 +56,13 @@ func (r *Repo) GetAllItemsNames(ctx context.Context) ([]string, error) {
 	return names, nil
 }
 
-func (r *Repo) UpdateItemsHistory(ctx context.Context, lots []*dmn.TradeLot) error {
+func (r *Repo) UpdateItemsHistory(ctx context.Context, lots []dmn.TradeLot) error {
 	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
-	records := deriveFmapTradeLotToRecord(func(lot *dmn.TradeLot) *ItemRecord {
+	records := deriveFmapTradeLotToRecord(func(lot dmn.TradeLot) *ItemRecord {
 		return &ItemRecord{
 			Name:      lot.Name,
 			Price:     lot.Price,

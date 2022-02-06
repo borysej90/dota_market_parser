@@ -6,18 +6,18 @@ import (
 	"dota_market_notifier"
 )
 
-// deriveFmapTradeLotToRecord returns a list where each element of the input list has been morphed by the input function.
-func deriveFmapTradeLotToRecord(f func(*dota_market_notifier.TradeLot) *ItemRecord, list []*dota_market_notifier.TradeLot) []*ItemRecord {
-	out := make([]*ItemRecord, len(list))
+// deriveFmapItemsNames returns a list where each element of the input list has been morphed by the input function.
+func deriveFmapItemsNames(f func(*ItemRecord) string, list []*ItemRecord) []string {
+	out := make([]string, len(list))
 	for i, elem := range list {
 		out[i] = f(elem)
 	}
 	return out
 }
 
-// deriveFmapItemsNames returns a list where each element of the input list has been morphed by the input function.
-func deriveFmapItemsNames(f func(*ItemRecord) string, list []*ItemRecord) []string {
-	out := make([]string, len(list))
+// deriveFmapTradeLotToRecord returns a list where each element of the input list has been morphed by the input function.
+func deriveFmapTradeLotToRecord(f func(dota_market_notifier.TradeLot) *ItemRecord, list []dota_market_notifier.TradeLot) []*ItemRecord {
+	out := make([]*ItemRecord, len(list))
 	for i, elem := range list {
 		out[i] = f(elem)
 	}
